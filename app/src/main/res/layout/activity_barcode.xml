@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="1"
+        android:background="#000000"
+        android:paddingTop="10dp">
+        <Button
+            android:layout_width="83dp"
+            android:layout_height="50dp"
+            android:text="Cancel"
+            android:id="@+id/button4"
+            android:background="@drawable/camerabutton"
+            android:textColor="#ffffff"
+            android:layout_marginRight="30dp"
+            android:onClick="goBackToHome"/>
+
+        <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+            android:src="@drawable/capture" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/camerabutton"
+        android:layout_height="50dp"
+        android:text="View Images"
+        android:id="@+id/button3"
+        android:onClick="goToGallery"
+        android:textColor="#ffffff" />
+    </LinearLayout>
+</LinearLayout>
