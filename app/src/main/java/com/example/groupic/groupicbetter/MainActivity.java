@@ -1,6 +1,7 @@
 package com.example.groupic.groupicbetter;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.provider.Settings.Secure;
+import android.widget.Toast;
 
+import com.example.groupic.groupicbetter.resources.Event;
+import com.example.groupic.groupicbetter.resources.Photo;
+import com.example.groupic.groupicbetter.resources.ServerHandler;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Event.join(this, "Helloworld", "asd");
+        //textview.setText();
+
     }
 
     @Override
@@ -49,11 +65,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("App", "worked");
 
                 String contents = intent.getStringExtra("SCAN_RESULT");
-                String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
+                Log.d("Barcode", contents);
                 // Handle successful scan
-                Intent i = new Intent(this, Barcode.class);
-                startActivity(i);
+                String event_id = String.valueOf(Event.join(this, contents, "asd"));
+                if (-1!=Integer.parseInt(event_id)) {
+                    Intent i = new Intent(this, Barcode.class);
+                    i.putExtra("event_id", event_id);
+                    startActivity(i);
+                }
+                else
+                {
+                    CharSequence text = "Event not found!";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(this, text, duration);
+                    toast.show();
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 // Handle cancel
                 Log.i("App", "Scan unsuccessful");

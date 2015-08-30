@@ -50,7 +50,6 @@ public class Barcode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode);
 
-
         // Create an instance of Camera
         mCamera = getCameraInstance();
 
@@ -68,7 +67,11 @@ public class Barcode extends AppCompatActivity {
 
     public void goToGallery(View view)
     {
+        Bundle extras = getIntent().getExtras();
+        String event_id = extras.getString("event_id");
+
         Intent i = new Intent(this, Gallery.class);
+        i.putExtra("event_id", event_id);
         startActivity(i);
     }
 }

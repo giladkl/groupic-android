@@ -41,9 +41,10 @@
         android:layout_marginLeft="30dp"
         android:background="@drawable/camerabutton"
         android:layout_height="50dp"
-        android:text="View Images"
+        android:text="Photos"
         android:id="@+id/button3"
         android:onClick="goToGallery"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:layout_weight="0.25" />
     </LinearLayout>
 </LinearLayout>
