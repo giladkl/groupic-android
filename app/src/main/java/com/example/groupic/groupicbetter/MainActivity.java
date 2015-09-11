@@ -18,9 +18,12 @@ import com.example.groupic.groupicbetter.resources.ServerHandler;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -30,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Event.join(this, "Helloworld", "asd");
-        //textview.setText();
 
     }
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Barcode", contents);
                 // Handle successful scan
                 String event_id = String.valueOf(Event.join(this, contents, "asd"));
-                if (-1!=Integer.parseInt(event_id)) {
+                if (-1 != Integer.parseInt(event_id)) {
                     Intent i = new Intent(this, Barcode.class);
                     i.putExtra("event_id", event_id);
                     startActivity(i);

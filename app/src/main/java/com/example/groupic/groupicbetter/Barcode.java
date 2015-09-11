@@ -71,7 +71,7 @@ public class Barcode extends AppCompatActivity {
         String event_id = extras.getString("event_id");
 
         Intent i = new Intent(this, Gallery.class);
-        i.putExtra("event_id", event_id);
+        i.putExtra("event_id", Integer.parseInt(event_id));
         startActivity(i);
     }
 }

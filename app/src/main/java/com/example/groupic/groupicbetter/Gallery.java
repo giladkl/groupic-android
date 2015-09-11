@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.groupic.groupicbetter.resources.Photo;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -26,45 +29,101 @@ import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Gallery extends AppCompatActivity {
 
     DisplayImageOptions options;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
 
-    String[] imageUrls;
+    List<String> imageUrls;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        imageUrls = new String[2];
-        imageUrls[0] = "http://globe-views.com/dcim/dreams/photo/photo-06.jpg";
-        imageUrls[1] = "http://wowslider.com/sliders/demo-31/data1/images/forest.jpg";
+        Bundle extras = getIntent().getExtras();
+        Integer event_id = extras.getInt("event_id");
+        final JSONArray response = Photo.getPhotos(this, event_id);
+
+        imageUrls = get_thumbnails(response);
 
         imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
 
-        Bundle bundle = getIntent().getExtras();
-
         options = new DisplayImageOptions.Builder()
-                .cacheInMemory()
-                .cacheOnDisc()
+                .showImageOnLoading(R.drawable.ic_stub)
+                .showImageForEmptyUri(R.drawable.ic_empty)
+                .showImageOnFail(R.drawable.ic_error)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
 
-        GridView gridView = (GridView) findViewById(R.id.gridview);
+
+        final GridView gridView = (GridView) findViewById(R.id.gridview);
         gridView.setAdapter(new ImageAdapter());
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(Gallery.this,ShowImage.class);
+                intent.putStringArrayListExtra("urls", (ArrayList<String>) getImageUrls(response));
+                intent.putExtra("position", position);
+                startActivity(intent);
+            }
+        });
 
+    }
+
+    private List<String> get_thumbnails(JSONArray response)
+    {
+        imageUrls = new ArrayList<String>();
+
+        for (int i=0;i<response.length();i++)
+        {
+            try {
+                JSONObject jo = (JSONObject) response.get(i);
+                imageUrls.add(jo.getString("thumbnail_url"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return imageUrls;
+    }
+
+    private List<String> getImageUrls(JSONArray response)
+    {
+        imageUrls = new ArrayList<String>();
+
+        for (int i=0;i<response.length();i++)
+        {
+            try {
+                JSONObject jo = (JSONObject) response.get(i);
+                imageUrls.add(jo.getString("image_url"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return imageUrls;
     }
 
     public class ImageAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return imageUrls.length;
+            return imageUrls.size();
         }
 
         @Override
@@ -86,7 +145,7 @@ public class Gallery extends AppCompatActivity {
                 imageView = (ImageView) convertView;
             }
 
-            imageLoader.displayImage(imageUrls[position], imageView, options);
+            imageLoader.displayImage(imageUrls.get(position), imageView, options);
 
             return imageView;
         }

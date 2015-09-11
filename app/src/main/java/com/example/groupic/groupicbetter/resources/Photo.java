@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -17,10 +18,16 @@ public class Photo extends Resource{
         try {
             HashMap params = new HashMap<String, String>();
             params.put("event_id", "" + eventId);
+            JSONArray response = server.get(context, baseUrl + "photos", params);
+            try {
+                if (false == (Boolean) response.get(1))
+                {
+                    return (JSONArray) response.get(0);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            JSONArray respone = server.get(context, baseUrl + "photos", params);
-
-            Log.d("Fuck java", respone.toString());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

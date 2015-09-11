@@ -38,9 +38,7 @@ public class ServerHandler {
             // fetch data
             DownloadWebpageTask task = new DownloadWebpageTask(params, "GET");
             task.execute(url);
-            Log.i("Response", task.get().toString());
             try {
-                Log.d("JavaSucks", "" + task.get().toString().length());
                 return new JSONArray(task.get().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -119,7 +117,7 @@ public class ServerHandler {
             }
             else {
                 if (httpType.equals("GET")) {
-                    conn.setDoInput(false);
+                    conn.setDoInput(true);
                 }
             }
             // Starts the query

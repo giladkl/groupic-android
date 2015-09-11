@@ -29,4 +29,5 @@
     </string-array>
     <string name="title_activity_details">DetailsActivity</string>
     <string name="title_activity_public_events">PublicEvents</string>
+    <string name="title_activity_show_image">show_image</string>
 </resources>
